@@ -62,7 +62,7 @@
             ctx.fillText(text, x, y);
 
             // Reset drop to top randomly after it crosses the screen
-            if (y > canvas.height && Math.random() > 0.975) {
+            if (y > canvas.height) {
                 drops[i] = 0;
             }
 
