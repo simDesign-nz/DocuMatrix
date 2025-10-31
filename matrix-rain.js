@@ -72,5 +72,16 @@
     }
 
     // Animation loop
-    setInterval(draw, 35);
+    let lastTime = 0;
+    const frameDelay = 35; // ~28 FPS
+    
+    function animate(currentTime) {
+        if (currentTime - lastTime >= frameDelay) {
+            draw();
+            lastTime = currentTime;
+        }
+        requestAnimationFrame(animate);
+    }
+    
+    requestAnimationFrame(animate);
 })();
