@@ -21,10 +21,21 @@ const ConverterExtensions = {
         let currentSection = null;
         let currentList = null;
         let codeBlock = null;
+        let lastLineWasList = false;
+        let consecutiveBlankLines = 0;
         
         lines.forEach((line, index) => {
-            // Skip empty lines
-            if (!line.trim() && !codeBlock) return;
+            // Track blank lines for list continuation logic
+            if (!line.trim() && !codeBlock) {
+                consecutiveBlankLines++;
+                // Terminate list after 2 consecutive blank lines
+                if (consecutiveBlankLines >= 2) {
+                    currentList = null;
+                    lastLineWasList = false;
+                }
+                return;
+            }
+            consecutiveBlankLines = 0;
             
             // Code blocks
             if (line.startsWith('```')) {
@@ -78,9 +89,13 @@ const ConverterExtensions = {
                     json.content.push(currentList);
                 }
                 currentList.items.push(item);
+                lastLineWasList = true;
                 return;
-            } else {
+            } else if (!lastLineWasList || line.match(/^#{1,6}\s+/)) {
+                // Only terminate list if previous line wasn't a list item
+                // or if we encounter a heading (which always breaks lists)
                 currentList = null;
+                lastLineWasList = false;
             }
             
             // Horizontal rules
@@ -166,29 +181,84 @@ const ConverterExtensions = {
     },
     
     /**
+     * Validate JSON structure without full parsing
+     */
+    _isValidJSONStructure: function(content) {
+        const trimmed = content.trim();
+        if (!((trimmed.startsWith('{') && trimmed.endsWith('}')) || 
+              (trimmed.startsWith('[') && trimmed.endsWith(']')))) {
+            return false;
+        }
+        
+        // Quick structural checks
+        let braceCount = 0;
+        let bracketCount = 0;
+        let inString = false;
+        let escape = false;
+        
+        for (let i = 0; i < trimmed.length; i++) {
+            const char = trimmed[i];
+            
+            if (escape) {
+                escape = false;
+                continue;
+            }
+            
+            if (char === '\\') {
+                escape = true;
+                continue;
+            }
+            
+            if (char === '"' && !escape) {
+                inString = !inString;
+                continue;
+            }
+            
+            if (!inString) {
+                if (char === '{') braceCount++;
+                else if (char === '}') braceCount--;
+                else if (char === '[') bracketCount++;
+                else if (char === ']') bracketCount--;
+            }
+        }
+        
+        return braceCount === 0 && bracketCount === 0 && !inString;
+    },
+    
+    /**
+     * Validate YAML structure
+     */
+    _isValidYAMLStructure: function(content) {
+        const trimmed = content.trim();
+        // Check for common YAML patterns
+        return trimmed.match(/^[\w-]+:\s*.+$/m) !== null &&
+               !trimmed.startsWith('{') && 
+               !trimmed.startsWith('[');
+    },
+    
+    /**
      * Detect content type
      */
     detectContentType: function(content) {
         const trimmed = content.trim();
         
-        // JSON detection
-        if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || 
-            (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        // JSON detection - validate structure first, then parse only if needed
+        if (this._isValidJSONStructure(trimmed)) {
             try {
                 JSON.parse(trimmed);
                 return 'json';
             } catch (e) {
-                // Not valid JSON
+                // Structure looked valid but parsing failed
             }
         }
         
-        // YAML detection (basic)
-        if (trimmed.match(/^[\w-]+:\s*.+$/m)) {
+        // YAML detection - check structure before parsing
+        if (this._isValidYAMLStructure(trimmed)) {
             try {
                 jsyaml.load(trimmed);
                 return 'yaml';
             } catch (e) {
-                // Not valid YAML
+                // Structure looked valid but parsing failed
             }
         }
         

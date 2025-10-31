@@ -237,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     const typedArray = new Uint8Array(loadEvent.target.result);
                     const pdf = await pdfjsLib.getDocument(typedArray).promise;
-                    let fullText = '';
                     let markdownContent = '';
                     
                     // Extract text from each page
@@ -254,7 +253,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (!text.trim()) return;
                             
                             const y = item.transform[5];
-                            const fontSize = item.transform[0];
+                            // Calculate proper font height from transform matrix
+                            // transform[3] is vertical scale (scaleY), which represents text height
+                            const fontHeight = Math.abs(item.transform[3]);
                             
                             // Detect headings based on font size
                             if (lastY !== null && Math.abs(y - lastY) > 15) {
@@ -266,18 +267,18 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             
                             // Apply heading formatting for larger fonts
-                            if (fontSize > 16) { // e.g., PDF_H1_MIN_FONT_SIZE
+                            if (fontHeight > 16) {
                                 pageText += `# ${text}`;
-                            } else if (fontSize > 14) { // e.g., PDF_H2_MIN_FONT_SIZE
+                            } else if (fontHeight > 14) {
                                 pageText += `## ${text}`;
-                            } else if (fontSize > 12) { // e.g., PDF_H3_MIN_FONT_SIZE
+                            } else if (fontHeight > 12) {
                                 pageText += `### ${text}`;
                             } else {
                                 pageText += text;
                             }
                             
                             lastY = y;
-                            lastFontSize = fontSize;
+                            lastFontSize = fontHeight;
                         });
                         
                         markdownContent += pageText;
@@ -547,4 +548,4 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBar.style.width = '0%';
         progressText.textContent = '0%';
     }
-});
+}); 
