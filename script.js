@@ -547,4 +547,4 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBar.style.width = '0%';
         progressText.textContent = '0%';
     }
-}); 
+});
