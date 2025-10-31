@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 downloadZipBtn.disabled = false;
             }, 0);
         } catch (error) {
-            alert('Error creating ZIP file: ' + error.message);
+            markdownResult.textContent = 'Error creating ZIP file: ' + error.message;
             downloadZipBtn.textContent = 'Download as ZIP';
             downloadZipBtn.disabled = false;
         }
