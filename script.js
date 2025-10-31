@@ -266,11 +266,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             
                             // Apply heading formatting for larger fonts
-                            if (fontSize > 16) {
+                            if (fontSize > 16) { // e.g., PDF_H1_MIN_FONT_SIZE
                                 pageText += `# ${text}`;
-                            } else if (fontSize > 14) {
+                            } else if (fontSize > 14) { // e.g., PDF_H2_MIN_FONT_SIZE
                                 pageText += `## ${text}`;
-                            } else if (fontSize > 12) {
+                            } else if (fontSize > 12) { // e.g., PDF_H3_MIN_FONT_SIZE
                                 pageText += `### ${text}`;
                             } else {
                                 pageText += text;
