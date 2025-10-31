@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuMatrix Forge - Advanced Document Transformation Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="matrix-styles.css">
+</head>
+<body>
+    <!-- Matrix Rain Background Canvas -->
+    <canvas id="matrix-canvas"></canvas>
+    
+    <!-- Avatar in bottom left -->
+    <div class="avatar-container">
+        <img src="9769586e-235e-4d43-bb9a-edad88a6c6cb.png" alt="Avatar" class="avatar-img">
+    </div>
+    
+    <div class="container">
+        <div class="header-logo">
+            <h1><span class="matrix-glyph">⚡</span> DocuMatrix Forge</h1>
+            <p class="tagline">Advanced Document Transformation Engine</p>
+        </div>
+        
+        <div class="mode-selector">
+            <button class="mode-btn active" data-mode="single">
+                <span class="btn-icon">📄</span>
+                <span class="btn-text">Single File</span>
+            </button>
+            <button class="mode-btn" data-mode="multiple">
+                <span class="btn-icon">📚</span>
+                <span class="btn-text">Multiple Files</span>
+            </button>
+            <button class="mode-btn" data-mode="directory">
+                <span class="btn-icon">🗂️</span>
+                <span class="btn-text">Entire Directory</span>
+            </button>
+        </div>
+        
+        <div class="format-selector">
+            <label>Output Format:</label>
+            <select id="output-format" class="format-dropdown">
+                <option value="markdown">Markdown (.md)</option>
+                <option value="json">JSON (.json)</option>
+                <option value="yaml">YAML (.yml)</option>
+            </select>
+        </div>
+        
+        <div class="upload-section">
+            <label for="docx-file" class="file-label">
+                <span id="file-label-text">Choose a document (Word/PDF)</span>
+                <input type="file" id="docx-file" accept=".docx,.pdf" />
+            </label>
+            <div class="file-name" id="file-name">No file selected</div>
+        </div>
+        
+        <div class="button-container">
+            <button id="convert-btn" disabled>Convert to Markdown</button>
+            <button id="download-btn" disabled>Download Markdown</button>
+            <button id="download-zip-btn" disabled style="display:none;">Download as ZIP</button>
+            <button id="copy-btn" disabled>Copy to Clipboard</button>
+        </div>
+        
+        <div id="batch-progress" class="batch-progress" style="display:none;">
+            <h3>Batch Processing Progress</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <span class="progress-text" id="progress-text">0%</span>
+            </div>
+            <div id="file-list" class="file-list"></div>
+        </div>
+        
+        <div class="result-container">
+            <div class="result-header">
+                <h2>Markdown Result</h2>
+            </div>
+            <div class="result-content">
+                <pre id="markdown-result">Your converted markdown will appear here...</pre>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Developer Credit Footer -->
+    <footer class="developer-footer">
+        <div class="footer-content">
+            <p>Developed By</p>
+            <a href="http://github.com/Mystic33-Neo" target="_blank" class="developer-link" id="dev-link">
+                <span class="dev-text">Simulated Designs NZ</span>
+                <span class="link-icon">→</span>
+            </a>
+        </div>
+    </footer>
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script>
+        // Configure PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="matrix-rain.js"></script>
+    <script src="converter-extensions.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
