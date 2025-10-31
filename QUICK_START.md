@@ -186,7 +186,7 @@ Your files never leave your device!
 
 1. Check `DOCUMATRIX_FORGE_README.md` for full docs
 2. See `IMPLEMENTATION_SUMMARY.md` for technical details
-3. Visit GitHub: http://github.com/Mystic33-Neo
+3. Visit GitHub: <http://github.com/Mystic33-Neo>
 
 ---
 
